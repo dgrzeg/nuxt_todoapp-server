@@ -1,4 +1,5 @@
 import { db } from '@/server/db'
+import { createError, sendError } from 'h3'
 
 export default defineEventHandler((event) => {
   const method = event.req.method
@@ -14,7 +15,14 @@ export default defineEventHandler((event) => {
       }
       return false
     })
-    if (!todo) throw new Error()
+    if (!todo) {
+      const TodoNotFoundError = createError({
+        statusCode: 404,
+        statusMessage: 'Todo not found',
+        data: {},
+      })
+      sendError(event, TodoNotFoundError)
+    }
 
     return { todo, index }
   }
