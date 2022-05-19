@@ -3,13 +3,13 @@ import { createError, sendError } from 'h3'
 
 export default defineEventHandler((event) => {
   const method = event.req.method
-  const { id } = event.context.param
+  const { id } = event.context.params
 
-  const findTodoById = (id) => {
+  const findTodoById = (todoId) => {
     let index
 
     const todo = db.todos.find((t, i) => {
-      if (t.id === id) {
+      if (t.id === todoId) {
         index = i
         return true
       }
@@ -23,7 +23,6 @@ export default defineEventHandler((event) => {
       })
       sendError(event, TodoNotFoundError)
     }
-
     return { todo, index }
   }
 
